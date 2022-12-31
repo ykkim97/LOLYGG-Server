@@ -10,7 +10,7 @@ require('dotenv').config({ path : '../lol-info-web/.env' });
 const PORT = 4000;
 
 let corsOptions = {
-    origin : "https://port-0-lolygg-server-cf24lcbykckm.gksl2.cloudtype.app/",
+    origin : "*",
 };
 
 app.use(cors(corsOptions));
