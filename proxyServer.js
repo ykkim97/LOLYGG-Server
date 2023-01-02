@@ -81,6 +81,19 @@ app.get('/playerInformation', async (req, res) => {
     res.json(information); 
 })
 
+// GET acivegames (현재 게임 정보 가져오기)
+app.get('/activegames', async (req, res) => {
+    const playerName = req.query.searchText;
+
+    // id
+    const id = await getPlayerID(playerName);
+    const API_CALL = `https://kr.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/${id}?api_key=${API_KEY}`;
+    const activegames = await axios.get(API_CALL)
+        .then(response => response.data)
+        .catch(error => console.log(error));
+    res.json(activegames);
+})
+
 // GET proficiency (소환사의 챔피언 숙련도 정보 가져오기)
 // localhost:4000/proficiency
 app.get('/proficiency', async (req, res) => {
