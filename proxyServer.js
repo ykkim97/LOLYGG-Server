@@ -159,28 +159,25 @@ app.get('/activePlayersTier', async (req, res) => {
     const playerName = req.query.playingSummonerName;
     console.log(playerName, "playerName")
     
+    const leagueDataArray = [];
+    const API_CALL = [];
+
     playerName.forEach(async (item) => {
         const ID = await getPlayerID(item)
-    });
-    console.log(ID, "ID")
-
-    const API_CALL = [];
-    ID.forEach((item) => {
-        API_CALL.push(`https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${item}?api_key=${API_KEY}`);
-    });
-    console.log(API_CALL, "API_CALL")
+        console.log(ID, "ID")
+        let API_CALL = `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${ID}?api_key=${API_KEY}`
+        console.log(API_CALL, "API_CALL")
 
 
-    const leagueDataArray = [];
-    API_CALL.forEach(async (item) => {
-        const leagueData = await axios.get(item)
+        const leagueData = await axios.get(API_CALL)
             .then(response => response.data)
             .catch(error => console.log(error));
         
+        console.log(leagueData, "leagueData")
         leagueDataArray.push(leagueData);
     });
-    console.log(leagueDataArray, "leagueDataArray")
-    console.log("asdddddddddsad")
+    
+    
     res.json(leagueDataArray)
 })
 
