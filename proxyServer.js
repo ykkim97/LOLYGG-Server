@@ -40,7 +40,6 @@ const getPlayerInformation = (playerName) => {
 const getPlayerPUUID = (playerName) => {
     return axios.get(`https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${playerName}?api_key=${API_KEY}`)
         .then(response => {
-            console.log(playerName)
             return response.data.puuid;
         })
         .catch(error => console.log(error));
@@ -120,7 +119,6 @@ app.get('/past10Games', async (req, res) => {
     const gameIDs = await axios.get(API_CALL)
         .then(response => response.data)
         .catch(error => console.log(error));
-    console.log(gameIDs, " => gameIDs");
 
     // loop through game IDs
     // at each loop, get the infomation based off ID
@@ -152,6 +150,37 @@ app.get('/tier', async (req, res) => {
         .catch(error => console.log(error))
     leagueDataArray.push(leagueData);
 
+    res.json(leagueDataArray)
+})
+
+// GET activePlayersTier (인게임 플레이어들의 티어정보 가져오기)
+// localhost:4000/activePlayersTier
+app.get('/activePlayersTier', async (req, res) => {
+    const playerName = req.query.playingSummonerName;
+    console.log(playerName, "playerName")
+    
+    playerName.forEach(async (item) => {
+        const ID = await getPlayerID(item)
+    });
+    console.log(ID, "ID")
+
+    const API_CALL = [];
+    ID.forEach((item) => {
+        API_CALL.push(`https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${item}?api_key=${API_KEY}`);
+    });
+    console.log(API_CALL, "API_CALL")
+
+
+    const leagueDataArray = [];
+    API_CALL.forEach(async (item) => {
+        const leagueData = await axios.get(item)
+            .then(response => response.data)
+            .catch(error => console.log(error));
+        
+        leagueDataArray.push(leagueData);
+    });
+    console.log(leagueDataArray, "leagueDataArray")
+    console.log("asdddddddddsad")
     res.json(leagueDataArray)
 })
 
