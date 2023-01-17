@@ -159,18 +159,12 @@ app.get('/activePlayersTier', async (req, res) => {
     const playerIds = req.query.playingSummonerId;
     let leagueArray = [];
 
-    playerIds.forEach(async (item) => {
-        await axios.get(`https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${item}?api_key=${API_KEY}`)
-            .then(response => {
-                return response.data[0];
-            })
-            .then((result) => {
-                leagueArray.push(result)
-            })
-            .catch(error => console.log(error));
-        console.log(leagueArray, "leagueArray 안")
-    });
-    
+    for (let i of playerIds) {
+        const res = await axios.get(`https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${i}?api_key=${API_KEY}`)
+        leagueArray.push(res.data[0]);
+        console.log(leagueArray,"leagueArray0")
+    }
+
     console.log(leagueArray, "leagueArray 밖")
     return res.json(leagueArray)
 })
@@ -181,7 +175,6 @@ app.get('/rotation', async (req, res) => {
     const rotation = await getRotationChampion();
     res.json(rotation);
 })
-
 
 app.listen(PORT, () => {
     console.log("Server started on port 4000 - 4000포트에서 서버 구동중");
