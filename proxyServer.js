@@ -156,29 +156,23 @@ app.get('/tier', async (req, res) => {
 // GET activePlayersTier (인게임 플레이어들의 티어정보 가져오기)
 // localhost:4000/activePlayersTier
 app.get('/activePlayersTier', async (req, res) => {
-    const playerName = req.query.playingSummonerName;
-    console.log(playerName, "playerName")
-    
-    const leagueDataArray = [];
-    const API_CALL = [];
+    const playerIds = req.query.playingSummonerId;
+    let leagueArray = [];
 
-    playerName.forEach(async (item) => {
-        const ID = await getPlayerID(item)
-        console.log(ID, "ID")
-        let API_CALL = `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${ID}?api_key=${API_KEY}`
-        console.log(API_CALL, "API_CALL")
-
-
-        const leagueData = await axios.get(API_CALL)
-            .then(response => response.data)
+    playerIds.forEach(async (item) => {
+        await axios.get(`https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${item}?api_key=${API_KEY}`)
+            .then(response => {
+                return response.data[0];
+            })
+            .then((result) => {
+                leagueArray.push(result)
+            })
             .catch(error => console.log(error));
-        
-        console.log(leagueData, "leagueData")
-        leagueDataArray.push(leagueData);
+        console.log(leagueArray, "leagueArray 안")
     });
     
-    
-    res.json(leagueDataArray)
+    console.log(leagueArray, "leagueArray 밖")
+    return res.json(leagueArray)
 })
 
 // GET rotation (로테이션 챔피언정보 가져오기)
